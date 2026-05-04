@@ -1,7 +1,7 @@
 # app.py
 import streamlit
+scikit-learn
 import pandas
-import sklearn
 from music_data import MUSIC_DATABASE, MOOD_EMOJIS
 
 def show_moods():
