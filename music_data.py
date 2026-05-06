@@ -1,5 +1,4 @@
 # music_data.py
-print("✅ music_data LOADED")
 MUSIC_DATABASE = {
     "sadness": [
         {"song": "Someone Like You", "artist": "Adele", "year": 2011},
