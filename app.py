@@ -2,7 +2,7 @@ import streamlit as st
 from textblob import TextBlob
 from music_data import MUSIC_DATABASE, MOOD_EMOJIS
 
-st.title("🎵 NLP Mood-Based Music Recommender")
+st.title("🎵 Mood-Based Music Recommender")
 
 user_text = st.text_area(
     "How are you feeling today?"
