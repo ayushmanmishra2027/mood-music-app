@@ -1,8 +1,17 @@
 import streamlit as st
-from textblob import TextBlob
+# app.py (ML-Based Mood Detection using Naive Bayes)
+
+```python
+import streamlit as st
+import pandas as pd
+
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.pipeline import Pipeline
+
 from music_data import MUSIC_DATABASE, MOOD_EMOJIS
 
-# PAGE SETTINGS
+# PAGE CONFIG
 st.set_page_config(
     page_title="Mood Music Recommender",
     page_icon="🎵",
@@ -13,105 +22,75 @@ st.set_page_config(
 st.title("🎵 Mood-Based Music Recommender")
 
 st.write(
-    "Enter how you are feeling and get music recommendations based on your mood."
+    "Enter your feelings and get music recommendations based on AI mood detection."
 )
+
+# TRAINING DATASET
+training_data = {
+    "text": [
+        "I am very happy",
+        "Life is amazing",
+        "I feel awesome",
+        "I love everyone",
+        "I miss her",
+        "You are beautiful",
+        "I feel sad",
+        "I am broken",
+        "Feeling lonely",
+        "I want to cry",
+        "I hate this",
+        "I am angry",
+        "This is frustrating",
+        "I feel nervous",
+        "I am scared",
+        "I am worried",
+        "Wow this is shocking",
+        "OMG unbelievable",
+        "Nothing special today",
+        "I am okay"
+    ],
+
+    "mood": [
+        "joy",
+        "joy",
+        "joy",
+        "love",
+        "love",
+        "love",
+        "sadness",
+        "sadness",
+        "sadness",
+        "sadness",
+        "anger",
+        "anger",
+        "anger",
+        "fear",
+        "fear",
+        "fear",
+        "surprise",
+        "surprise",
+        "neutral",
+        "neutral"
+    ]
+}
+
+# CREATE DATAFRAME
+
+ df = pd.DataFrame(training_data)
+
+# MACHINE LEARNING PIPELINE
+model = Pipeline([
+    ('vectorizer', CountVectorizer()),
+    ('classifier', MultinomialNB())
+])
+
+# TRAIN MODEL
+model.fit(df['text'], df['mood'])
 
 # USER INPUT
 user_text = st.text_area(
     "How are you feeling today?"
 )
-
-# MOOD DETECTION FUNCTION
-def detect_mood(text):
-
-    text = text.lower()
-
-    # SADNESS
-    sadness_words = [
-        "sad", "cry", "depressed", "unhappy",
-        "lonely", "heartbroken", "down",
-        "upset", "not okay", "feeling low",
-        "broken", "hurt", "bad"
-    ]
-
-    # ANGER
-    anger_words = [
-        "angry", "mad", "furious",
-        "hate", "annoyed", "rage",
-        "frustrated"
-    ]
-
-    # JOY
-    joy_words = [
-        "happy", "great", "awesome",
-        "excited", "amazing", "good"
-    ]
-
-    # LOVE
-    love_words = [
-        "love", "romantic", "cute",
-        "beautiful", "adore", "miss you"
-    ]
-
-    # FEAR
-    fear_words = [
-        "fear", "afraid", "scared",
-        "anxious", "worried", "nervous"
-    ]
-
-    # SURPRISE
-    surprise_words = [
-        "wow", "surprised", "shocked",
-        "unexpected", "omg"
-    ]
-
-    # KEYWORD CHECKING
-
-    for word in sadness_words:
-        if word in text:
-            return "sadness"
-
-    for word in anger_words:
-        if word in text:
-            return "anger"
-
-    for word in joy_words:
-        if word in text:
-            return "joy"
-
-    for word in love_words:
-        if word in text:
-            return "love"
-
-    for word in fear_words:
-        if word in text:
-            return "fear"
-
-    for word in surprise_words:
-        if word in text:
-            return "surprise"
-
-    # TEXTBLOB FALLBACK
-
-    analysis = TextBlob(text)
-
-    polarity = analysis.sentiment.polarity
-
-    if polarity > 0.5:
-        return "joy"
-
-    elif polarity > 0:
-        return "love"
-
-    elif polarity < -0.5:
-        return "sadness"
-
-    elif polarity < 0:
-        return "anger"
-
-    else:
-        return "neutral"
-
 
 # BUTTON
 if st.button("🎶 Recommend Music"):
@@ -121,12 +100,15 @@ if st.button("🎶 Recommend Music"):
 
     else:
 
-        mood = detect_mood(user_text)
+        # PREDICT MOOD
+        mood = model.predict([user_text])[0]
 
+        # SHOW DETECTED MOOD
         st.success(
             f"Detected Mood: {mood.upper()} {MOOD_EMOJIS[mood]}"
         )
 
+        # SHOW SONGS
         st.subheader("🎧 Recommended Songs")
 
         for song in MUSIC_DATABASE[mood]:
@@ -136,3 +118,112 @@ if st.button("🎶 Recommend Music"):
             )
 
         st.balloons()
+```
+
+---
+
+# requirements.txt
+
+```txt
+streamlit
+textblob
+scikit-learn
+pandas
+```
+
+---
+
+# Core ML Concepts Used
+
+## 1. CountVectorizer
+
+Converts text into numerical vectors.
+
+Example:
+
+```text
+"I am happy"
+```
+
+becomes:
+
+```text
+[0,1,0,1,1]
+```
+
+Machine learning models cannot understand text directly, so vectorization converts words into numbers.
+
+---
+
+## 2. Multinomial Naive Bayes
+
+A machine learning classification algorithm.
+
+Used for:
+
+* Sentiment analysis
+* Spam detection
+* Text classification
+
+It predicts mood based on probability of words.
+
+Example:
+
+Words like:
+
+* happy
+* awesome
+* amazing
+
+increase probability of:
+
+```text
+joy
+```
+
+---
+
+## 3. Pipeline
+
+Combines:
+
+* CountVectorizer
+* Naive Bayes model
+
+into one system.
+
+```python
+model = Pipeline([
+    ('vectorizer', CountVectorizer()),
+    ('classifier', MultinomialNB())
+])
+```
+
+---
+
+## 4. Model Training
+
+```python
+model.fit(df['text'], df['mood'])
+```
+
+This teaches the AI model patterns between:
+
+* text
+* mood labels
+
+---
+
+## 5. Prediction
+
+```python
+model.predict([user_text])[0]
+```
+
+Predicts user emotion using trained ML model.
+
+---
+
+# Presentation Line
+
+“We upgraded the project from basic sentiment analysis to a machine learning-based recommendation system using CountVectorizer and Multinomial Naive Bayes. The model is trained on sample emotional text data and predicts user mood more intelligently before recommending songs.”
