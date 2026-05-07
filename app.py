@@ -1,85 +1,34 @@
-def detect_mood(text):
+# app.py
 
-    text = text.lower()
+from music_data import MUSIC_DATABASE, MOOD_EMOJIS
 
-    # KEYWORD-BASED DETECTION
+def show_moods():
+    print("\nAvailable moods:")
+    for mood in MUSIC_DATABASE:
+        print(f"{MOOD_EMOJIS[mood]} {mood}")
 
-    sadness_words = [
-        "sad", "cry", "depressed", "unhappy",
-        "lonely", "heartbroken", "down",
-        "upset", "not okay", "feeling low",
-        "broken", "hurt", "bad"
-    ]
+def recommend_music(mood):
+    if mood not in MUSIC_DATABASE:
+        print("\nInvalid mood! Try again.")
+        return
 
-    anger_words = [
-        "angry", "mad", "furious",
-        "hate", "annoyed", "rage",
-        "frustrated"
-    ]
+    print(f"\nSongs for {mood.upper()} {MOOD_EMOJIS[mood]}:\n")
 
-    joy_words = [
-        "happy", "great", "awesome",
-        "excited", "amazing", "good"
-    ]
+    for song in MUSIC_DATABASE[mood]:
+        print(f"- {song['song']} by {song['artist']} ({song['year']})")
 
-    love_words = [
-        "love", "romantic", "cute",
-        "beautiful", "adore", "miss you"
-    ]
+def main():
+    print("🎵 Mood-Based Music Recommender 🎵")
 
-    fear_words = [
-        "fear", "afraid", "scared",
-        "anxious", "worried", "nervous"
-    ]
+    while True:
+        show_moods()
+        user_mood = input("\nEnter your mood (or 'exit' to quit): ").lower()
 
-    surprise_words = [
-        "wow", "surprised", "shocked",
-        "unexpected", "omg"
-    ]
+        if user_mood == "exit":
+            print("\nGoodbye!")
+            break
 
-    # CHECK KEYWORDS FIRST
+        recommend_music(user_mood)
 
-    for word in sadness_words:
-        if word in text:
-            return "sadness"
-
-    for word in anger_words:
-        if word in text:
-            return "anger"
-
-    for word in joy_words:
-        if word in text:
-            return "joy"
-
-    for word in love_words:
-        if word in text:
-            return "love"
-
-    for word in fear_words:
-        if word in text:
-            return "fear"
-
-    for word in surprise_words:
-        if word in text:
-            return "surprise"
-
-    # FALLBACK SENTIMENT ANALYSIS
-
-    analysis = TextBlob(text)
-
-    polarity = analysis.sentiment.polarity
-
-    if polarity > 0.5:
-        return "joy"
-
-    elif polarity > 0:
-        return "love"
-
-    elif polarity < -0.5:
-        return "sadness"
-
-    elif polarity < 0:
-        return "anger"
-
-    else:
-        return "neutral"
+if __name__ == "__main__":
+    main()
