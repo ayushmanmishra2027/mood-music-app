@@ -24,52 +24,115 @@ st.write(
 # TRAINING DATA
 training_data = {
     "text": [
-        "I am very happy",
+
+        # JOY
+        "I am happy",
         "Life is amazing",
         "I feel awesome",
-        "I love everyone",
+        "I am excited",
+        "This is wonderful",
+        "I feel great",
+
+        # LOVE
+        "I love her",
         "You are beautiful",
-        "I miss her",
-        "I feel sad",
-        "I am broken",
-        "Feeling lonely",
+        "I miss you",
+        "Feeling romantic",
+        "You are special",
+
+        # SADNESS
+        "I am sad",
+        "I feel depressed",
         "I want to cry",
+        "I feel lonely",
+        "I am heartbroken",
+        "I am not okay",
+        "Feeling very bad",
+        "I feel broken",
+        "I am hurt",
+        "very sad",
+        "sad very much",
+        "i m sad",
+        "feeling low",
+
+        # ANGER
         "I hate this",
         "I am angry",
         "This is frustrating",
-        "I feel nervous",
+        "I am mad",
+
+        # FEAR
         "I am scared",
+        "I feel nervous",
         "I am worried",
-        "Wow amazing surprise",
-        "OMG unbelievable",
-        "Nothing special today",
-        "I am okay"
+        "I am afraid",
+
+        # SURPRISE
+        "Wow unbelievable",
+        "OMG shocking",
+        "This is surprising",
+
+        # NEUTRAL
+        "I am okay",
+        "Nothing special",
+        "Normal day"
     ],
 
     "mood": [
+
+        # JOY
         "joy",
         "joy",
         "joy",
+        "joy",
+        "joy",
+        "joy",
+
+        # LOVE
         "love",
         "love",
         "love",
+        "love",
+        "love",
+
+        # SADNESS
         "sadness",
         "sadness",
         "sadness",
         "sadness",
+        "sadness",
+        "sadness",
+        "sadness",
+        "sadness",
+        "sadness",
+        "sadness",
+        "sadness",
+        "sadness",
+        "sadness",
+
+        # ANGER
         "anger",
         "anger",
         "anger",
+        "anger",
+
+        # FEAR
         "fear",
         "fear",
         "fear",
+        "fear",
+
+        # SURPRISE
         "surprise",
         "surprise",
+        "surprise",
+
+        # NEUTRAL
+        "neutral",
         "neutral",
         "neutral"
     ]
 }
-
 # CREATE DATAFRAME
 df = pd.DataFrame(training_data)
 
