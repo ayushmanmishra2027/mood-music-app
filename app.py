@@ -1,26 +1,81 @@
-import streamlit as st
-from textblob import TextBlob
-from music_data import MUSIC_DATABASE, MOOD_EMOJIS
-
-st.title("🎵 Mood-Based Music Recommender")
-
-user_text = st.text_area(
-    "How are you feeling today?"
-)
-
 def detect_mood(text):
+
+    text = text.lower()
+
+    # KEYWORD-BASED DETECTION
+
+    sadness_words = [
+        "sad", "cry", "depressed", "unhappy",
+        "lonely", "heartbroken", "down",
+        "upset", "not okay", "feeling low",
+        "broken", "hurt", "bad"
+    ]
+
+    anger_words = [
+        "angry", "mad", "furious",
+        "hate", "annoyed", "rage",
+        "frustrated"
+    ]
+
+    joy_words = [
+        "happy", "great", "awesome",
+        "excited", "amazing", "good"
+    ]
+
+    love_words = [
+        "love", "romantic", "cute",
+        "beautiful", "adore", "miss you"
+    ]
+
+    fear_words = [
+        "fear", "afraid", "scared",
+        "anxious", "worried", "nervous"
+    ]
+
+    surprise_words = [
+        "wow", "surprised", "shocked",
+        "unexpected", "omg"
+    ]
+
+    # CHECK KEYWORDS FIRST
+
+    for word in sadness_words:
+        if word in text:
+            return "sadness"
+
+    for word in anger_words:
+        if word in text:
+            return "anger"
+
+    for word in joy_words:
+        if word in text:
+            return "joy"
+
+    for word in love_words:
+        if word in text:
+            return "love"
+
+    for word in fear_words:
+        if word in text:
+            return "fear"
+
+    for word in surprise_words:
+        if word in text:
+            return "surprise"
+
+    # FALLBACK SENTIMENT ANALYSIS
 
     analysis = TextBlob(text)
 
     polarity = analysis.sentiment.polarity
 
-    if polarity > 0.4:
+    if polarity > 0.5:
         return "joy"
 
     elif polarity > 0:
         return "love"
 
-    elif polarity < -0.4:
+    elif polarity < -0.5:
         return "sadness"
 
     elif polarity < 0:
@@ -28,23 +83,3 @@ def detect_mood(text):
 
     else:
         return "neutral"
-
-if st.button("Recommend Music"):
-
-    if user_text.strip() == "":
-        st.warning("Please enter your feelings.")
-    else:
-
-        mood = detect_mood(user_text)
-
-        st.success(
-            f"Detected Mood: {mood.upper()} {MOOD_EMOJIS[mood]}"
-        )
-
-        st.subheader("Recommended Songs")
-
-        for song in MUSIC_DATABASE[mood]:
-
-            st.write(
-                f"🎶 {song['song']} by {song['artist']} ({song['year']})"
-            )
