@@ -1,34 +1,138 @@
-# app.py
-
+import streamlit as st
+from textblob import TextBlob
 from music_data import MUSIC_DATABASE, MOOD_EMOJIS
 
-def show_moods():
-    print("\nAvailable moods:")
-    for mood in MUSIC_DATABASE:
-        print(f"{MOOD_EMOJIS[mood]} {mood}")
+# PAGE SETTINGS
+st.set_page_config(
+    page_title="Mood Music Recommender",
+    page_icon="🎵",
+    layout="centered"
+)
 
-def recommend_music(mood):
-    if mood not in MUSIC_DATABASE:
-        print("\nInvalid mood! Try again.")
-        return
+# TITLE
+st.title("🎵 Mood-Based Music Recommender")
 
-    print(f"\nSongs for {mood.upper()} {MOOD_EMOJIS[mood]}:\n")
+st.write(
+    "Enter how you are feeling and get music recommendations based on your mood."
+)
 
-    for song in MUSIC_DATABASE[mood]:
-        print(f"- {song['song']} by {song['artist']} ({song['year']})")
+# USER INPUT
+user_text = st.text_area(
+    "How are you feeling today?"
+)
 
-def main():
-    print("🎵 Mood-Based Music Recommender 🎵")
+# MOOD DETECTION FUNCTION
+def detect_mood(text):
 
-    while True:
-        show_moods()
-        user_mood = input("\nEnter your mood (or 'exit' to quit): ").lower()
+    text = text.lower()
 
-        if user_mood == "exit":
-            print("\nGoodbye!")
-            break
+    # SADNESS
+    sadness_words = [
+        "sad", "cry", "depressed", "unhappy",
+        "lonely", "heartbroken", "down",
+        "upset", "not okay", "feeling low",
+        "broken", "hurt", "bad"
+    ]
 
-        recommend_music(user_mood)
+    # ANGER
+    anger_words = [
+        "angry", "mad", "furious",
+        "hate", "annoyed", "rage",
+        "frustrated"
+    ]
 
-if __name__ == "__main__":
-    main()
+    # JOY
+    joy_words = [
+        "happy", "great", "awesome",
+        "excited", "amazing", "good"
+    ]
+
+    # LOVE
+    love_words = [
+        "love", "romantic", "cute",
+        "beautiful", "adore", "miss you"
+    ]
+
+    # FEAR
+    fear_words = [
+        "fear", "afraid", "scared",
+        "anxious", "worried", "nervous"
+    ]
+
+    # SURPRISE
+    surprise_words = [
+        "wow", "surprised", "shocked",
+        "unexpected", "omg"
+    ]
+
+    # KEYWORD CHECKING
+
+    for word in sadness_words:
+        if word in text:
+            return "sadness"
+
+    for word in anger_words:
+        if word in text:
+            return "anger"
+
+    for word in joy_words:
+        if word in text:
+            return "joy"
+
+    for word in love_words:
+        if word in text:
+            return "love"
+
+    for word in fear_words:
+        if word in text:
+            return "fear"
+
+    for word in surprise_words:
+        if word in text:
+            return "surprise"
+
+    # TEXTBLOB FALLBACK
+
+    analysis = TextBlob(text)
+
+    polarity = analysis.sentiment.polarity
+
+    if polarity > 0.5:
+        return "joy"
+
+    elif polarity > 0:
+        return "love"
+
+    elif polarity < -0.5:
+        return "sadness"
+
+    elif polarity < 0:
+        return "anger"
+
+    else:
+        return "neutral"
+
+
+# BUTTON
+if st.button("🎶 Recommend Music"):
+
+    if user_text.strip() == "":
+        st.warning("Please enter your feelings.")
+
+    else:
+
+        mood = detect_mood(user_text)
+
+        st.success(
+            f"Detected Mood: {mood.upper()} {MOOD_EMOJIS[mood]}"
+        )
+
+        st.subheader("🎧 Recommended Songs")
+
+        for song in MUSIC_DATABASE[mood]:
+
+            st.write(
+                f"🎵 {song['song']} — {song['artist']} ({song['year']})"
+            )
+
+        st.balloons()
